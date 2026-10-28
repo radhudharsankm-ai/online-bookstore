@@ -1,0 +1,80 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Orders - Online Bookstore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Customer Orders</h1>
+        <p>Manage your bookstore customer orders</p>
+        <a href="{{ url_for('index') }}" class="nav-link">Back to Bookstore</a>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>All Orders</h2>
+
+            {% if orders %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer Name</th>
+                            <th>Book Title</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.customer_name }}</td>
+                            <td>{{ order.title }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>
+                                <form action="{{ url_for('update_order_status', order_id=order.id) }}"
+                                      method="POST">
+                                    <select name="status" required>
+                                        <option value="Pending"
+                                            {% if order.status == 'Pending' %}selected{% endif %}>
+                                            Pending
+                                        </option>
+                                        <option value="Completed"
+                                            {% if order.status == 'Completed' %}selected{% endif %}>
+                                            Completed
+                                        </option>
+                                        <option value="Cancelled"
+                                            {% if order.status == 'Cancelled' %}selected{% endif %}>
+                                            Cancelled
+                                        </option>
+                                    </select>
+                                    <button type="submit">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty-message">No customer orders yet. Place an order from the bookstore page.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>Online Bookstore Management System</p>
+    </footer>
+
+</body>
+</html>

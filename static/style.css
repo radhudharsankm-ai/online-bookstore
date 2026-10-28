@@ -1,0 +1,167 @@
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f6fb;
+    color: #263238;
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(135deg, #173b68, #2878a8);
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+header p {
+    margin-bottom: 15px;
+}
+
+.nav-link {
+    display: inline-block;
+    background-color: white;
+    color: #173b68;
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    background-color: #e1edfa;
+}
+
+main {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    color: #173b68;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccd5df;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: 2px solid #83b8ed;
+    border-color: #2878a8;
+}
+
+button {
+    background-color: #2878a8;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    margin-top: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #173b68;
+}
+
+.delete-btn {
+    background-color: #d64545;
+}
+
+.delete-btn:hover {
+    background-color: #a92727;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #e0e5eb;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background-color: #e8f0fa;
+    color: #173b68;
+    white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8faff;
+}
+
+tbody tr:hover {
+    background-color: #eef5ff;
+}
+
+.small-form {
+    min-width: 130px;
+}
+
+.small-form input {
+    min-width: 100px;
+}
+
+.empty-message {
+    color: #64748b;
+    padding: 15px 0;
+}
+
+footer {
+    background-color: #173b68;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 25px;
+    }
+
+    main {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
