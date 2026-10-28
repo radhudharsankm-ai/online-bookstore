@@ -1,9 +1,14 @@
-
-from flask import Flask, render_template, request, redirect, url_for
+import os
 import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-DATABASE = "bookstore.db"
+
+# Vercel uses temporary storage; locally, use the project folder.
+if os.environ.get("VERCEL"):
+    DATABASE = "/tmp/bookstore.db"
+else:
+    DATABASE = os.path.join(os.path.dirname(__file__), "bookstore.db")
 
 
 def get_db_connection():
@@ -14,6 +19,7 @@ def get_db_connection():
 
 def create_table():
     conn = get_db_connection()
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS books (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +29,7 @@ def create_table():
             quantity INTEGER NOT NULL
         )
     """)
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +40,7 @@ def create_table():
             FOREIGN KEY (book_id) REFERENCES books(id)
         )
     """)
+
     conn.commit()
     conn.close()
 
@@ -40,8 +48,11 @@ def create_table():
 @app.route("/")
 def index():
     conn = get_db_connection()
-    books = conn.execute("SELECT * FROM books ORDER BY id DESC").fetchall()
+    books = conn.execute(
+        "SELECT * FROM books ORDER BY id DESC"
+    ).fetchall()
     conn.close()
+
     return render_template("index.html", books=books)
 
 
@@ -54,11 +65,15 @@ def add_book():
 
     conn = get_db_connection()
     conn.execute(
-        "INSERT INTO books (title, author, price, quantity) VALUES (?, ?, ?, ?)",
+        """
+        INSERT INTO books (title, author, price, quantity)
+        VALUES (?, ?, ?, ?)
+        """,
         (title, author, price, quantity)
     )
     conn.commit()
     conn.close()
+
     return redirect(url_for("index"))
 
 
@@ -71,20 +86,29 @@ def update_book(book_id):
 
     conn = get_db_connection()
     conn.execute(
-        "UPDATE books SET title=?, author=?, price=?, quantity=? WHERE id=?",
+        """
+        UPDATE books
+        SET title=?, author=?, price=?, quantity=?
+        WHERE id=?
+        """,
         (title, author, price, quantity, book_id)
     )
     conn.commit()
     conn.close()
+
     return redirect(url_for("index"))
 
 
 @app.route("/delete/<int:book_id>", methods=["POST"])
 def delete_book(book_id):
     conn = get_db_connection()
-    conn.execute("DELETE FROM books WHERE id=?", (book_id,))
+    conn.execute(
+        "DELETE FROM books WHERE id=?",
+        (book_id,)
+    )
     conn.commit()
     conn.close()
+
     return redirect(url_for("index"))
 
 
@@ -96,11 +120,15 @@ def add_order():
 
     conn = get_db_connection()
     conn.execute(
-        "INSERT INTO orders (customer_name, book_id, quantity) VALUES (?, ?, ?)",
+        """
+        INSERT INTO orders (customer_name, book_id, quantity)
+        VALUES (?, ?, ?)
+        """,
         (customer_name, book_id, quantity)
     )
     conn.commit()
     conn.close()
+
     return redirect(url_for("view_orders"))
 
 
@@ -115,12 +143,14 @@ def view_orders():
         ORDER BY orders.id DESC
     """).fetchall()
     conn.close()
+
     return render_template("orders.html", orders=orders)
 
 
 @app.route("/order/status/<int:order_id>", methods=["POST"])
 def update_order_status(order_id):
     status = request.form["status"]
+
     if status not in ("Pending", "Completed", "Cancelled"):
         return "Invalid order status", 400
 
@@ -131,12 +161,17 @@ def update_order_status(order_id):
     )
     conn.commit()
     conn.close()
+
     return redirect(url_for("view_orders"))
 
 
-if __name__ == "__main__":
-    create_table()
-    import os
+# Initialize the tables when the application is imported by Vercel.
+create_table()
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False
+    )
